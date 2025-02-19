@@ -11,6 +11,7 @@ class MainViewModel(
     override fun liveData(): LiveData<Screen> = navigation.liveData()
 
     fun init(firstRun: Boolean) {
-        navigation.update(ListScreen)
+        if (firstRun)
+            navigation.update(ListScreen)
     }
 }

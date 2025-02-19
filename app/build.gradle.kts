@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,12 +10,18 @@ android {
     namespace = "com.smurzik.viedoplayer"
     compileSdk = 35
 
+    val file = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(file))
+
     defaultConfig {
         applicationId = "com.smurzik.viedoplayer"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "apiKey", properties.getProperty("apiKey"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,11 +43,15 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
 
 dependencies {
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.converter.gson)
+    implementation(libs.retrofit)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.exoplayer)

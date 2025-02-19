@@ -14,13 +14,13 @@ class ListItemMapper(
     override fun map(
         id: Long,
         image: String,
-        duration: Int,
+        duration: String,
         userName: String,
         link: String,
         title: String
     ) {
         this.title.text = title
-        this.duration.text = duration.toString()
+        this.duration.text = duration
         Glide.with(this.image).load(image).placeholder(R.drawable.ic_movie).into(this.image)
     }
 }

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ViedoPlayer"
+rootProject.name = "VideoPlayer"
 include(":app")
  

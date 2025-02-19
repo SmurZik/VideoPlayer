@@ -1,0 +1,60 @@
+package com.smurzik.viedoplayer.list.presentation
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.smurzik.viedoplayer.databinding.ListItemBinding
+
+class VideoListAdapter : RecyclerView.Adapter<VideoListViewHolder>() {
+
+    private val videoList = mutableListOf<VideoItemUi>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoListViewHolder {
+        return VideoListViewHolder(
+            ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
+    }
+
+    override fun getItemCount() = videoList.size
+
+    override fun onBindViewHolder(holder: VideoListViewHolder, position: Int) {
+        holder.bind(videoList[position])
+    }
+
+    fun update(source: List<VideoItemUi>) {
+        val diffUtil = DiffUtilCallback(videoList, source)
+        val diff = DiffUtil.calculateDiff(diffUtil)
+        videoList.clear()
+        videoList.addAll(source)
+        diff.dispatchUpdatesTo(this)
+    }
+}
+
+class VideoListViewHolder(binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+    private val image = binding.videoThumbnail
+    private val title = binding.videoTitle
+    private val duration = binding.videoDuration
+    private val mapper = ListItemMapper(image, title, duration)
+
+    fun bind(item: VideoItemUi) {
+        item.map(mapper)
+    }
+}
+
+class DiffUtilCallback(
+    private val oldList: List<VideoItemUi>,
+    private val newList: List<VideoItemUi>
+) : DiffUtil.Callback() {
+
+    override fun getOldListSize() = oldList.size
+
+    override fun getNewListSize() = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+        oldList[oldItemPosition].matches(newList[newItemPosition])
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+        oldList[oldItemPosition] == newList[newItemPosition]
+}

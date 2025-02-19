@@ -22,7 +22,7 @@ interface LiveDataWrapper {
         override fun liveData(): LiveData<T> = liveData
 
         override fun update(value: T) {
-            liveData.value = value
+            liveData.postValue(value)
         }
     }
 }

@@ -9,6 +9,7 @@ class VideoItemDataToDomain : VideoItemData.Mapper<VideoItemDomain> {
         image: String,
         duration: Int,
         userName: String,
-        link: String
-    ) = VideoItemDomain(id, image, duration, userName, link)
+        link: String,
+        title: String
+    ) = VideoItemDomain(id, image, duration, userName, link, title)
 }

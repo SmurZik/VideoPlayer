@@ -1,5 +1,7 @@
 package com.smurzik.viedoplayer.list.data
 
+import kotlin.random.Random
+
 interface VideoCloudDataSource {
 
     suspend fun getVideos(): List<VideoItemData>
@@ -9,14 +11,15 @@ interface VideoCloudDataSource {
     ) : VideoCloudDataSource {
 
         override suspend fun getVideos(): List<VideoItemData> {
-            val result = service.getVideos().videos
+            val result = service.getVideos(Random.nextInt(1, 11)).videos
             return result.map {
                 VideoItemData(
                     it.id,
                     it.image,
                     it.duration,
                     it.user.name,
-                    it.files.first().link
+                    it.files.first().link,
+                    it.title
                 )
             }
         }

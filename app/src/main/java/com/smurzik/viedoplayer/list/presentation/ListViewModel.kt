@@ -24,6 +24,8 @@ class ListViewModel(
         }
     }
 
+    fun progressLiveData(): LiveData<Int> = progressLiveDataWrapper.liveData()
+
     override fun liveData(): LiveData<List<VideoItemUi>> = listLiveDataWrapper.liveData()
 
     override fun update(value: List<VideoItemUi>) {

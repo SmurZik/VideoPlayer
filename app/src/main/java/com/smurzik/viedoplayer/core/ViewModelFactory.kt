@@ -21,27 +21,30 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ViewModelFactory : ViewModelProvider.Factory {
 
     private val navigation = Navigation.Base()
-    private val service = Retrofit.Builder().baseUrl("https://api.deezer.com/")
+    private val service = Retrofit.Builder().baseUrl("https://api.pexels.com/videos/")
         .addConverterFactory(GsonConverterFactory.create()).build()
         .create(VideoService::class.java)
     private val repository = BaseVideoRepository(
         VideoCloudDataSource.Base(service),
         VideoItemDataToDomain()
     )
+    private val listLiveDataWrapper = ListLiveDataWrapper.Base()
     private val interactor = VideoInteractor.Base(repository)
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
             MainViewModel::class.java -> MainViewModel(navigation = navigation)
-            ListViewModel::class.java -> ListViewModel(
-                interactor,
-                ProgressLiveDataWrapper.Base(),
-                ListLiveDataWrapper.Base(),
-                VideoResultMapper(
-                    ListLiveDataWrapper.Base(),
-                    VideoItemDomainToUi()
+            ListViewModel::class.java -> {
+                ListViewModel(
+                    interactor,
+                    ProgressLiveDataWrapper.Base(),
+                    listLiveDataWrapper,
+                    VideoResultMapper(
+                        listLiveDataWrapper,
+                        VideoItemDomainToUi()
+                    )
                 )
-            )
+            }
 
             else -> throw IllegalStateException("Unknown viewModel class $modelClass")
         } as T

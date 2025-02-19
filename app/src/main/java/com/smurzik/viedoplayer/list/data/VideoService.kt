@@ -3,11 +3,11 @@ package com.smurzik.viedoplayer.list.data
 import com.smurzik.viedoplayer.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Query
 
 interface VideoService {
 
-    //https://api.pexels.com/videos/
     @Headers("Authorization: ${BuildConfig.apiKey}")
-    @GET("popular")
-    suspend fun getVideos(): VideoItemCloud
+    @GET("search?query=nature&")
+    suspend fun getVideos(@Query("page") page: Int): VideoItemCloud
 }

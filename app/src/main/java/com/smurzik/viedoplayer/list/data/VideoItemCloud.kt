@@ -10,6 +10,8 @@ data class VideoItemCloud(
 data class Content(
     @SerializedName("id")
     val id: Long,
+    @SerializedName("url")
+    val title: String,
     @SerializedName("image")
     val image: String,
     @SerializedName("duration")

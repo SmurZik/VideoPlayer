@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.glide)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.converter.gson)
     implementation(libs.retrofit)

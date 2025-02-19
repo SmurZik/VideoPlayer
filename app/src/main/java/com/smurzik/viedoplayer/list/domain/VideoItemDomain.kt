@@ -5,7 +5,8 @@ data class VideoItemDomain(
     private val image: String,
     private val duration: Int,
     private val userName: String,
-    private val link: String
+    private val link: String,
+    private val title: String
 ) {
     interface Mapper<T> {
         fun map(
@@ -13,9 +14,10 @@ data class VideoItemDomain(
             image: String,
             duration: Int,
             userName: String,
-            link: String
+            link: String,
+            title: String
         ): T
     }
 
-    fun <T> map(mapper: Mapper<T>): T = mapper.map(id, image, duration, userName, link)
+    fun <T> map(mapper: Mapper<T>): T = mapper.map(id, image, duration, userName, link, title)
 }

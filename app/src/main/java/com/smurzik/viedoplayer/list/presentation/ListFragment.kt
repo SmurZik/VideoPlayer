@@ -17,6 +17,26 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val viewModel: ListViewModel by viewModels { ViewModelFactory() }
+        val adapter = VideoListAdapter()
+
+        binding.recyclerView.adapter = adapter
+
+        viewModel.init()
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = true
+            viewModel.init()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
+        viewModel.progressLiveData().observe(viewLifecycleOwner) {
+            binding.progressBar.visibility = it
+        }
+
+        viewModel.liveData().observe(viewLifecycleOwner) {
+            adapter.update(it)
+        }
     }
 }

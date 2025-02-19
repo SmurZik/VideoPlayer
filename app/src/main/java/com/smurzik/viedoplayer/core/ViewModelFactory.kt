@@ -1,13 +1,14 @@
 package com.smurzik.viedoplayer.core
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.exoplayer.ExoPlayer
 import com.smurzik.viedoplayer.list.data.BaseVideoRepository
 import com.smurzik.viedoplayer.list.data.VideoCloudDataSource
 import com.smurzik.viedoplayer.list.data.VideoItemDataToDomain
 import com.smurzik.viedoplayer.list.data.VideoService
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
-import com.smurzik.viedoplayer.list.domain.VideoRepository
 import com.smurzik.viedoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.viedoplayer.list.presentation.ListViewModel
 import com.smurzik.viedoplayer.list.presentation.ProgressLiveDataWrapper
@@ -15,10 +16,12 @@ import com.smurzik.viedoplayer.list.presentation.VideoItemDomainToUi
 import com.smurzik.viedoplayer.list.presentation.VideoResultMapper
 import com.smurzik.viedoplayer.main.MainViewModel
 import com.smurzik.viedoplayer.main.Navigation
+import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
+import com.smurzik.viedoplayer.player.presentation.PlayerViewModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ViewModelFactory : ViewModelProvider.Factory {
+class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
 
     private val navigation = Navigation.Base()
     private val service = Retrofit.Builder().baseUrl("https://api.pexels.com/videos/")
@@ -29,7 +32,10 @@ class ViewModelFactory : ViewModelProvider.Factory {
         VideoItemDataToDomain()
     )
     private val listLiveDataWrapper = ListLiveDataWrapper.Base()
+    private val sharedCurrentVideo = CurrentVideoLiveDataWrapper.Base()
     private val interactor = VideoInteractor.Base(repository)
+    private val exoPlayer = ExoPlayer.Builder(context).build()
+    private val playerHelper = PlayerHelper(exoPlayer, VideoItemUiToUrl())
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
@@ -42,10 +48,14 @@ class ViewModelFactory : ViewModelProvider.Factory {
                     VideoResultMapper(
                         listLiveDataWrapper,
                         VideoItemDomainToUi()
-                    )
+                    ),
+                    sharedCurrentVideo,
+                    playerHelper,
+                    navigation
                 )
             }
 
+            PlayerViewModel::class.java -> PlayerViewModel(playerHelper)
             else -> throw IllegalStateException("Unknown viewModel class $modelClass")
         } as T
     }

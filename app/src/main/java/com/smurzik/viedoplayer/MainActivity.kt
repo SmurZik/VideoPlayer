@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.smurzik.viedoplayer.core.VideoPlayerApp
 import com.smurzik.viedoplayer.core.ViewModelFactory
 import com.smurzik.viedoplayer.databinding.ActivityMainBinding
 import com.smurzik.viedoplayer.main.MainViewModel
@@ -24,7 +25,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val viewModel: MainViewModel by viewModels { ViewModelFactory() }
+        val viewModelFactory = (application as VideoPlayerApp).viewModelFactory
+
+        val viewModel: MainViewModel by viewModels { viewModelFactory }
 
         viewModel.init(savedInstanceState == null)
 

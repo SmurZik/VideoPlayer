@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.smurzik.viedoplayer.core.AbstractFragment
+import com.smurzik.viedoplayer.core.VideoPlayerApp
 import com.smurzik.viedoplayer.core.ViewModelFactory
 import com.smurzik.viedoplayer.databinding.VideoListFragmentBinding
 
@@ -18,8 +19,15 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val viewModel: ListViewModel by viewModels { ViewModelFactory() }
-        val adapter = VideoListAdapter()
+        val viewModelFactory = (requireActivity().application as VideoPlayerApp).viewModelFactory
+
+        val viewModel: ListViewModel by viewModels { viewModelFactory }
+
+        val adapter = VideoListAdapter(object : ClickListener {
+            override fun click(item: VideoItemUi) {
+                viewModel.updateCurrentTrack(item)
+            }
+        })
 
         binding.recyclerView.adapter = adapter
 

@@ -6,13 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.smurzik.viedoplayer.databinding.ListItemBinding
 
-class VideoListAdapter : RecyclerView.Adapter<VideoListViewHolder>() {
+class VideoListAdapter(
+    private val clickListener: ClickListener
+) : RecyclerView.Adapter<VideoListViewHolder>() {
 
     private val videoList = mutableListOf<VideoItemUi>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoListViewHolder {
         return VideoListViewHolder(
-            ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            clickListener
         )
     }
 
@@ -31,7 +34,14 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListViewHolder>() {
     }
 }
 
-class VideoListViewHolder(binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+interface ClickListener {
+    fun click(item: VideoItemUi)
+}
+
+class VideoListViewHolder(
+    private val binding: ListItemBinding,
+    private val clickListener: ClickListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val image = binding.videoThumbnail
     private val title = binding.videoTitle
@@ -40,6 +50,9 @@ class VideoListViewHolder(binding: ListItemBinding) : RecyclerView.ViewHolder(bi
 
     fun bind(item: VideoItemUi) {
         item.map(mapper)
+        binding.root.setOnClickListener {
+            clickListener.click(item)
+        }
     }
 }
 

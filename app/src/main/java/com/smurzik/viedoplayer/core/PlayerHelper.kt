@@ -9,13 +9,18 @@ class PlayerHelper(
     private val urlMapper: VideoItemUi.Mapper<String>
 ) {
 
+    fun isPlaying() = exoPlayer.isPlaying
+
     fun setMediaItem(item: VideoItemUi) {
         val mediaItem = MediaItem.fromUri(item.map(urlMapper))
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
+        exoPlayer.play()
     }
 
     fun player(): ExoPlayer = exoPlayer
+
+    fun stop() = exoPlayer.stop()
 }
 
 class VideoItemUiToUrl : VideoItemUi.Mapper<String> {

@@ -1,5 +1,6 @@
 package com.smurzik.viedoplayer.list.presentation
 
+import android.content.pm.ActivityInfo
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -7,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.smurzik.viedoplayer.core.PlayerHelper
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
 import com.smurzik.viedoplayer.main.Navigation
-import com.smurzik.viedoplayer.main.Screen
 import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
+import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.PlayerScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,9 +22,12 @@ class ListViewModel(
     private val currentVideo: CurrentVideoLiveDataWrapper.Mutable,
     private val playerHelper: PlayerHelper,
     private val navigation: Navigation.Mutable,
+    private val orientation: OrientationLiveDataWrapper.Mutable
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
     fun init() {
+        if (playerHelper.isPlaying())
+            playerHelper.stop()
         progressLiveDataWrapper.update(View.VISIBLE)
         viewModelScope.launch(Dispatchers.IO) {
             val result = videoInteractor.getVideos()
@@ -31,6 +35,8 @@ class ListViewModel(
             result.map(resultMapper)
         }
     }
+
+    fun updateOrientation(value: Int) = orientation.update(value)
 
     fun updateCurrentTrack(value: VideoItemUi) {
         navigation.update(PlayerScreen)

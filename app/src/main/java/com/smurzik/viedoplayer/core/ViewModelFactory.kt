@@ -17,6 +17,7 @@ import com.smurzik.viedoplayer.list.presentation.VideoResultMapper
 import com.smurzik.viedoplayer.main.MainViewModel
 import com.smurzik.viedoplayer.main.Navigation
 import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
+import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.PlayerViewModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -36,10 +37,15 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     private val interactor = VideoInteractor.Base(repository)
     private val exoPlayer = ExoPlayer.Builder(context).build()
     private val playerHelper = PlayerHelper(exoPlayer, VideoItemUiToUrl())
+    private val orientation = OrientationLiveDataWrapper.Base()
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
-            MainViewModel::class.java -> MainViewModel(navigation = navigation)
+            MainViewModel::class.java -> MainViewModel(
+                navigation = navigation,
+                orientation = orientation
+            )
+
             ListViewModel::class.java -> {
                 ListViewModel(
                     interactor,
@@ -51,11 +57,12 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                     ),
                     sharedCurrentVideo,
                     playerHelper,
-                    navigation
+                    navigation,
+                    orientation
                 )
             }
 
-            PlayerViewModel::class.java -> PlayerViewModel(playerHelper)
+            PlayerViewModel::class.java -> PlayerViewModel(playerHelper, orientation)
             else -> throw IllegalStateException("Unknown viewModel class $modelClass")
         } as T
     }

@@ -3,9 +3,11 @@ package com.smurzik.viedoplayer.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.smurzik.viedoplayer.list.presentation.ListScreen
+import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 
 class MainViewModel(
-    private val navigation: Navigation.Mutable
+    private val navigation: Navigation.Mutable,
+    private val orientation: OrientationLiveDataWrapper.Read
 ) : ViewModel(), Navigation.Read {
 
     override fun liveData(): LiveData<Screen> = navigation.liveData()
@@ -14,4 +16,6 @@ class MainViewModel(
         if (firstRun)
             navigation.update(ListScreen)
     }
+
+    fun orientation() = orientation.liveData()
 }

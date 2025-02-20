@@ -1,5 +1,6 @@
 package com.smurzik.viedoplayer.list.presentation
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.smurzik.viedoplayer.core.AbstractFragment
 import com.smurzik.viedoplayer.core.VideoPlayerApp
-import com.smurzik.viedoplayer.core.ViewModelFactory
 import com.smurzik.viedoplayer.databinding.VideoListFragmentBinding
 
 class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
@@ -32,6 +32,10 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
         binding.recyclerView.adapter = adapter
 
         viewModel.init()
+
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
+        viewModel.updateOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true

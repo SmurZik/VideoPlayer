@@ -1,5 +1,6 @@
 package com.smurzik.viedoplayer.player.presentation
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.smurzik.viedoplayer.core.AbstractFragment
 import com.smurzik.viedoplayer.core.VideoPlayerApp
-import com.smurzik.viedoplayer.core.ViewModelFactory
 import com.smurzik.viedoplayer.databinding.VideoPlayerFragmentBinding
 
 class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
@@ -24,6 +24,14 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
         val playerViewModel: PlayerViewModel by viewModels { viewModelFactory }
 
         binding.playerView.player = playerViewModel.player()
-    }
 
+        binding.fullScreenButton.setOnClickListener {
+            if (playerViewModel.liveData().value == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+                playerViewModel.updateOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+            else {
+                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                playerViewModel.updateOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+            }
+        }
+    }
 }

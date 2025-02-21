@@ -7,7 +7,7 @@ import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 
 class MainViewModel(
     private val navigation: Navigation.Mutable,
-    private val orientation: OrientationLiveDataWrapper.Read
+    private val orientation: OrientationLiveDataWrapper.Mutable
 ) : ViewModel(), Navigation.Read {
 
     override fun liveData(): LiveData<Screen> = navigation.liveData()
@@ -18,4 +18,6 @@ class MainViewModel(
     }
 
     fun orientation() = orientation.liveData()
+
+    fun updateOrientation(value: Int) = orientation.update(value)
 }

@@ -1,6 +1,5 @@
 package com.smurzik.viedoplayer.list.presentation
 
-import android.content.pm.ActivityInfo
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.smurzik.viedoplayer.core.PlayerHelper
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
 import com.smurzik.viedoplayer.main.Navigation
+import com.smurzik.viedoplayer.main.Screen
 import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.PlayerScreen
@@ -42,6 +42,12 @@ class ListViewModel(
         navigation.update(PlayerScreen)
         currentVideo.update(value)
         playerHelper.setMediaItem(value)
+    }
+
+    fun navigation() = navigation.liveData()
+
+    fun updateNavigation(value: Screen) {
+        navigation.update(value)
     }
 
     fun progressLiveData(): LiveData<Int> = progressLiveDataWrapper.liveData()

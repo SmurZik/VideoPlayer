@@ -1,27 +1,33 @@
 package com.smurzik.viedoplayer
 
 import android.content.pm.ActivityInfo
-import android.os.Build
+import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.OrientationEventListener
 import android.view.View
-import android.view.WindowInsetsController
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.setPadding
-import androidx.media3.exoplayer.mediacodec.MediaCodecAdapter.Configuration
+import androidx.media3.common.Player
 import com.smurzik.viedoplayer.core.VideoPlayerApp
 import com.smurzik.viedoplayer.core.ViewModelFactory
 import com.smurzik.viedoplayer.databinding.ActivityMainBinding
 import com.smurzik.viedoplayer.main.MainViewModel
+import com.smurzik.viedoplayer.main.Screen
+import com.smurzik.viedoplayer.player.presentation.PlayerScreen
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var viewModelFactory: ViewModelFactory
+    val viewModel: MainViewModel by viewModels { viewModelFactory }
+    private lateinit var orientationEventListener: OrientationEventListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,15 +39,16 @@ class MainActivity : AppCompatActivity() {
         windowInsetsController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.containerView) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        orientationEventListener = object : OrientationEventListener(this) {
+            override fun onOrientationChanged(orientation: Int) {
+                if ((orientation in 80..100 || orientation in 260..280) && viewModel.liveData().value == PlayerScreen) {
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                    disable()
+                }
+            }
         }
 
-        val viewModelFactory = (application as VideoPlayerApp).viewModelFactory
-
-        val viewModel: MainViewModel by viewModels { viewModelFactory }
+        viewModelFactory = (application as VideoPlayerApp).viewModelFactory
 
         viewModel.init(savedInstanceState == null)
 
@@ -51,17 +58,40 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.containerView) { view, insets ->
             viewModel.orientation().observe(this) {
-                if (it == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-                    view.setPadding(0, 0, 0, 0)
+                if (it == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && viewModel.liveData().value == PlayerScreen) {
+                    enterFullScreen(windowInsetsController, view)
                 } else {
                     exitFullScreen(windowInsetsController, insets, view)
                 }
             }
-            if (viewModel.orientation().value != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            if (viewModel.orientation().value != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE || viewModel.liveData().value != PlayerScreen) {
                 exitFullScreen(windowInsetsController, insets, view)
+            } else {
+                enterFullScreen(windowInsetsController, view)
             }
             ViewCompat.onApplyWindowInsets(view, insets)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val orientation =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            else
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        viewModel.updateOrientation(orientation)
+    }
+
+    private fun enterFullScreen(
+        windowInsetsController: WindowInsetsControllerCompat,
+        view: View
+    ) {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        view.setPadding(0, 0, 0, 0)
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+        if (orientationEventListener.canDetectOrientation()) {
+            orientationEventListener.enable()
         }
     }
 
@@ -70,13 +100,15 @@ class MainActivity : AppCompatActivity() {
         insets: WindowInsetsCompat,
         view: View
     ) {
-        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        val systemBars =
+            insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
         view.setPadding(
             systemBars.left,
             systemBars.top,
             systemBars.right,
             systemBars.bottom
         )
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
     }
 }

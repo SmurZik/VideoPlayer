@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.smurzik.viedoplayer.core.AbstractFragment
 import com.smurzik.viedoplayer.core.VideoPlayerApp
 import com.smurzik.viedoplayer.databinding.VideoListFragmentBinding
+import com.smurzik.viedoplayer.player.presentation.PlayerScreen
 
 class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
 
@@ -29,11 +30,12 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
             }
         })
 
+        if (viewModel.navigation().value == PlayerScreen)
+            viewModel.updateNavigation(ListScreen)
+
         binding.recyclerView.adapter = adapter
 
         viewModel.init()
-
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         viewModel.updateOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 

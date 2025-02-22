@@ -20,7 +20,11 @@ class PlayerHelper(
 
     fun player(): ExoPlayer = exoPlayer
 
+    fun pause() = exoPlayer.pause()
+
     fun stop() = exoPlayer.stop()
+
+    fun play() = exoPlayer.play()
 }
 
 class VideoItemUiToUrl : VideoItemUi.Mapper<String> {

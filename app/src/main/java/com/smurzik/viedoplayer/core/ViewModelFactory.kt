@@ -14,6 +14,7 @@ import com.smurzik.viedoplayer.list.presentation.ListViewModel
 import com.smurzik.viedoplayer.list.presentation.ProgressLiveDataWrapper
 import com.smurzik.viedoplayer.list.presentation.VideoItemDomainToUi
 import com.smurzik.viedoplayer.list.presentation.VideoResultMapper
+import com.smurzik.viedoplayer.main.FullscreenManualLiveDataWrapper
 import com.smurzik.viedoplayer.main.MainViewModel
 import com.smurzik.viedoplayer.main.Navigation
 import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
@@ -38,12 +39,14 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     private val exoPlayer = ExoPlayer.Builder(context).build()
     private val playerHelper = PlayerHelper(exoPlayer, VideoItemUiToUrl())
     private val orientation = OrientationLiveDataWrapper.Base()
+    private val fullScreenManual = FullscreenManualLiveDataWrapper.Base()
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
             MainViewModel::class.java -> MainViewModel(
                 navigation = navigation,
-                orientation = orientation
+                orientation = orientation,
+                fullScreenManual
             )
 
             ListViewModel::class.java -> {
@@ -62,7 +65,12 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                 )
             }
 
-            PlayerViewModel::class.java -> PlayerViewModel(playerHelper, orientation)
+            PlayerViewModel::class.java -> PlayerViewModel(
+                playerHelper,
+                orientation,
+                fullScreenManual
+            )
+
             else -> throw IllegalStateException("Unknown viewModel class $modelClass")
         } as T
     }

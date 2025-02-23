@@ -34,6 +34,8 @@ class PlayerHelper(
     fun stop() = exoPlayer.stop()
 
     fun play() = exoPlayer.play()
+
+    fun seekTo(millis: Long) = exoPlayer.seekTo(millis)
 }
 
 class VideoItemUiToUrl : VideoItemUi.Mapper<String> {

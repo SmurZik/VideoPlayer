@@ -5,13 +5,16 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
@@ -33,6 +36,30 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
     private lateinit var playerViewModel: PlayerViewModel
     private lateinit var orientationEnterFullscreenEventListener: OrientationEventListener
     private lateinit var orientationExitFullscreenEventListener: OrientationEventListener
+    private lateinit var controlLayout: ControlLayout
+
+    private val gestureDetector by lazy {
+        GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                handleDoubleTap(e)
+                return true
+            }
+
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                if (controlLayout.visibility == View.VISIBLE)
+                    controlLayout.visibility = View.GONE
+                return true
+            }
+        })
+    }
+
+    private fun handleDoubleTap(e: MotionEvent) {
+
+        if (e.x < binding.playerView.width / 2)
+            playerViewModel.seekBack()
+        else
+            playerViewModel.seekForward()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,6 +104,9 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
         val seekBar = view.findViewById<SeekBar>(R.id.seekBar)
         val progressTextView = view.findViewById<TextView>(R.id.progress)
         val durationTextView = view.findViewById<TextView>(R.id.duration)
+        val skipNextButton = view.findViewById<ImageButton>(R.id.buttonNext)
+        val skipPreviousButton = view.findViewById<ImageButton>(R.id.buttonPrevious)
+        controlLayout = view.findViewById(R.id.controlLayout)
 
         btnPlayPause.setOnClickListener {
             if (playerViewModel.isPlaying()) {
@@ -86,6 +116,27 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
                 playerViewModel.play()
                 btnPlayPause.setImageResource(R.drawable.ic_pause)
             }
+        }
+
+        controlLayout.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            if (event.action == MotionEvent.ACTION_UP) {
+                controlLayout.performClick()
+            }
+            true
+        }
+
+        binding.playerView.setOnClickListener {
+            if (controlLayout.visibility != View.VISIBLE)
+                controlLayout.visibility = View.VISIBLE
+        }
+
+        skipPreviousButton.setOnClickListener {
+            playerViewModel.player().seekToPrevious()
+        }
+
+        skipNextButton.setOnClickListener {
+            playerViewModel.player().seekToNext()
         }
 
         playerViewModel.duration().observe(viewLifecycleOwner) {

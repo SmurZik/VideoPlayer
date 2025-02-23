@@ -61,4 +61,16 @@ class PlayerViewModel(
     fun pause() = playerHelper.pause()
 
     fun play() = playerHelper.play()
+
+    fun seekBack() {
+        playerHelper.seekTo((playerHelper.currentProgress() - 5000).coerceAtLeast(0))
+    }
+
+    fun seekForward() {
+        playerHelper.seekTo(
+            (playerHelper.currentProgress() + 5000).coerceAtMost(
+                playerHelper.newDuration().toLong()
+            )
+        )
+    }
 }

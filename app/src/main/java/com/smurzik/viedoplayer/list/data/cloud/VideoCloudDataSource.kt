@@ -1,6 +1,7 @@
-package com.smurzik.viedoplayer.list.data
+package com.smurzik.viedoplayer.list.data.cloud
 
 import androidx.core.text.isDigitsOnly
+import com.smurzik.viedoplayer.list.data.VideoItemData
 import java.util.Locale
 import kotlin.random.Random
 

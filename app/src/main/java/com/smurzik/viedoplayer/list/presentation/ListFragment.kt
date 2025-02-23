@@ -35,13 +35,13 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
 
         binding.recyclerView.adapter = adapter
 
-        viewModel.init()
+        viewModel.init(false)
 
         viewModel.updateOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
-            viewModel.init()
+            viewModel.init(true)
             binding.swipeRefreshLayout.isRefreshing = false
         }
 

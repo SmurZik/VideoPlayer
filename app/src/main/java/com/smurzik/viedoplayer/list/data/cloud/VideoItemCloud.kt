@@ -1,4 +1,4 @@
-package com.smurzik.viedoplayer.list.data
+package com.smurzik.viedoplayer.list.data.cloud
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,4 +1,4 @@
-package com.smurzik.viedoplayer.list.data
+package com.smurzik.viedoplayer.list.data.cloud
 
 import com.smurzik.viedoplayer.BuildConfig
 import retrofit2.http.GET

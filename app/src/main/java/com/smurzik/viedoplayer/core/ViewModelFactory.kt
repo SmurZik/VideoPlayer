@@ -4,10 +4,14 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.room.Room
 import com.smurzik.viedoplayer.list.data.BaseVideoRepository
-import com.smurzik.viedoplayer.list.data.VideoCloudDataSource
+import com.smurzik.viedoplayer.list.data.cloud.VideoCloudDataSource
 import com.smurzik.viedoplayer.list.data.VideoItemDataToDomain
-import com.smurzik.viedoplayer.list.data.VideoService
+import com.smurzik.viedoplayer.list.data.cache.VideoCacheDataSource
+import com.smurzik.viedoplayer.list.data.cache.VideoDataToCache
+import com.smurzik.viedoplayer.list.data.cache.VideoRoomDatabase
+import com.smurzik.viedoplayer.list.data.cloud.VideoService
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
 import com.smurzik.viedoplayer.list.presentation.DurationMapper
 import com.smurzik.viedoplayer.list.presentation.IndexMapper
@@ -19,7 +23,6 @@ import com.smurzik.viedoplayer.list.presentation.VideoResultMapper
 import com.smurzik.viedoplayer.main.FullscreenManualLiveDataWrapper
 import com.smurzik.viedoplayer.main.MainViewModel
 import com.smurzik.viedoplayer.main.Navigation
-import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.PlayerViewModel
 import com.smurzik.viedoplayer.player.presentation.SeekBarLiveDataWrapper
@@ -32,9 +35,23 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     private val service = Retrofit.Builder().baseUrl("https://api.pexels.com/videos/")
         .addConverterFactory(GsonConverterFactory.create()).build()
         .create(VideoService::class.java)
+    private val database by lazy {
+        return@lazy Room.databaseBuilder(
+            context,
+            VideoRoomDatabase::class.java,
+            "videos_database"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+    private val cacheDataSource = VideoCacheDataSource.Base(
+        database.videoDao(),
+        VideoDataToCache()
+    )
     private val repository = BaseVideoRepository(
         VideoCloudDataSource.Base(service),
-        VideoItemDataToDomain()
+        VideoItemDataToDomain(),
+        cacheDataSource
     )
     private val listLiveDataWrapper = ListLiveDataWrapper.Base()
     private val interactor = VideoInteractor.Base(repository)

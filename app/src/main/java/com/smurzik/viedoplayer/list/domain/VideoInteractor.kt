@@ -2,14 +2,14 @@ package com.smurzik.viedoplayer.list.domain
 
 interface VideoInteractor {
 
-    suspend fun getVideos(): VideoResult
+    suspend fun getVideos(needUpdate: Boolean): VideoResult
 
     class Base(
         private val repository: VideoRepository
     ) : VideoInteractor {
 
-        override suspend fun getVideos(): VideoResult {
-            val result = repository.getVideos()
+        override suspend fun getVideos(needUpdate: Boolean): VideoResult {
+            val result = repository.getVideos(needUpdate)
             return VideoResult.Success(result)
         }
     }

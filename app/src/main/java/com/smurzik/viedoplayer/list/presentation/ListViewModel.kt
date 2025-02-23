@@ -28,12 +28,12 @@ class ListViewModel(
     private val indexMapper: IndexMapper
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
-    fun init() {
+    fun init(needUpdate: Boolean) {
         if (playerHelper.isPlaying())
             playerHelper.stop()
         progressLiveDataWrapper.update(View.VISIBLE)
         viewModelScope.launch(Dispatchers.IO) {
-            val result = videoInteractor.getVideos()
+            val result = videoInteractor.getVideos(needUpdate)
             progressLiveDataWrapper.update(View.GONE)
             result.map(resultMapper)
         }

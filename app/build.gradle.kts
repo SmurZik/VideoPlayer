@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.smurzik.viedoplayer"
+    namespace = "com.smurzik.videoplayer"
     compileSdk = 35
 
     val file = rootProject.file("local.properties")
@@ -16,7 +16,7 @@ android {
     properties.load(FileInputStream(file))
 
     defaultConfig {
-        applicationId = "com.smurzik.viedoplayer"
+        applicationId = "com.smurzik.videoplayer"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

@@ -149,6 +149,7 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == Player.STATE_READY) {
                     playerViewModel.updateSeekBar()
+                    playerViewModel.updateDuration(playerViewModel.newDuration())
                 }
             }
 

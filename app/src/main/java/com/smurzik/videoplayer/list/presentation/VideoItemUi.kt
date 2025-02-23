@@ -28,7 +28,7 @@ data class VideoItemUi(
     fun matches(source: VideoItemUi) = source.id == id
 }
 
-class DurationMapper() : VideoItemUi.Mapper<Int> {
+class DurationMapper : VideoItemUi.Mapper<Int> {
     override fun map(
         id: Long,
         image: String,
@@ -40,7 +40,7 @@ class DurationMapper() : VideoItemUi.Mapper<Int> {
     ): Int = duration * 1000
 }
 
-class IndexMapper() : VideoItemUi.Mapper<Int> {
+class IndexMapper : VideoItemUi.Mapper<Int> {
     override fun map(
         id: Long,
         image: String,

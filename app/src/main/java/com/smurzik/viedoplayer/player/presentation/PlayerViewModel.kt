@@ -8,6 +8,7 @@ import com.smurzik.viedoplayer.core.SharedDurationLiveDataWrapper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class PlayerViewModel(
     private val playerHelper: PlayerHelper,
@@ -27,6 +28,13 @@ class PlayerViewModel(
     }
 
     fun newDuration() = playerHelper.newDuration()
+
+    fun formatDuration(millis: Int): String {
+        val seconds = millis / 1000
+        val minutes = seconds / 60
+        val secondsRemain = seconds % 60
+        return String.format(Locale.ROOT, "%02d:%02d", minutes, secondsRemain)
+    }
 
     fun updateDuration(value: Int) = duration.update(value)
 

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
@@ -20,6 +21,7 @@ import com.smurzik.viedoplayer.core.AbstractFragment
 import com.smurzik.viedoplayer.core.VideoPlayerApp
 import com.smurzik.viedoplayer.core.ViewModelFactory
 import com.smurzik.viedoplayer.databinding.VideoPlayerFragmentBinding
+import org.w3c.dom.Text
 
 class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
@@ -73,6 +75,8 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
         val btnPlayPause = view.findViewById<ImageButton>(R.id.buttonPlayPause)
         val fullscreenButton = view.findViewById<ImageButton>(R.id.fullscreenButton)
         val seekBar = view.findViewById<SeekBar>(R.id.seekBar)
+        val progressTextView = view.findViewById<TextView>(R.id.progress)
+        val durationTextView = view.findViewById<TextView>(R.id.duration)
 
         btnPlayPause.setOnClickListener {
             if (playerViewModel.isPlaying()) {
@@ -86,6 +90,7 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
         playerViewModel.duration().observe(viewLifecycleOwner) {
             seekBar.max = it
+            durationTextView.text = playerViewModel.formatDuration(it)
         }
 
         playerViewModel.player().addListener(object : Player.Listener {
@@ -109,9 +114,11 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
         playerViewModel.seekBar().observe(viewLifecycleOwner) {
             seekBar.progress = it
+            progressTextView.text = playerViewModel.formatDuration(it)
         }
 
         seekBar.max = playerViewModel.duration().value ?: 0
+        durationTextView.text = playerViewModel.formatDuration(seekBar.max)
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) =

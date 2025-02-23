@@ -84,7 +84,9 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
             }
         }
 
-        seekBar.max = playerViewModel.duration().value ?: 0
+        playerViewModel.duration().observe(viewLifecycleOwner) {
+            seekBar.max = it
+        }
 
         playerViewModel.player().addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -92,6 +94,11 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
                 if (playbackState == Player.STATE_READY) {
                     playerViewModel.updateSeekBar()
                 }
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                playerViewModel.updateDuration(playerViewModel.newDuration())
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -103,6 +110,8 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
         playerViewModel.seekBar().observe(viewLifecycleOwner) {
             seekBar.progress = it
         }
+
+        seekBar.max = playerViewModel.duration().value ?: 0
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) =

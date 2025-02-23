@@ -14,14 +14,15 @@ interface VideoCloudDataSource {
 
         override suspend fun getVideos(): List<VideoItemData> {
             val result = service.getVideos(Random.nextInt(1, 11)).videos
-            return result.map {
+            return result.mapIndexed { index, content ->
                 VideoItemData(
-                    it.id,
-                    it.image,
-                    it.duration,
-                    it.user.name,
-                    it.files.first().link,
-                    formatTitle(it.title)
+                    content.id,
+                    content.image,
+                    content.duration,
+                    content.user.name,
+                    content.files.first().link,
+                    formatTitle(content.title),
+                    index
                 )
             }
         }
@@ -33,11 +34,15 @@ interface VideoCloudDataSource {
             title.split("-").forEachIndexed { index, s ->
                 if (!s.isDigitsOnly()) {
                     if (index == 0)
-                        result.append("${s.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        }} ")
+                        result.append(
+                            "${
+                                s.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.ROOT
+                                    ) else it.toString()
+                                }
+                            } "
+                        )
                     else
                         result.append("$s ")
                 }

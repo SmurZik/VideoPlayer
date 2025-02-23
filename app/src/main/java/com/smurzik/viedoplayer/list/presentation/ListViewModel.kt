@@ -20,12 +20,12 @@ class ListViewModel(
     private val progressLiveDataWrapper: ProgressLiveDataWrapper.Mutable,
     private val listLiveDataWrapper: ListLiveDataWrapper.Mutable,
     private val resultMapper: VideoResultMapper,
-    private val currentVideo: CurrentVideoLiveDataWrapper.Mutable,
     private val playerHelper: PlayerHelper,
     private val navigation: Navigation.Mutable,
     private val orientation: OrientationLiveDataWrapper.Mutable,
     private val duration: SharedDurationLiveDataWrapper.Mutable,
-    private val durationMapper: DurationMapper
+    private val durationMapper: DurationMapper,
+    private val indexMapper: IndexMapper
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
     fun init() {
@@ -41,11 +41,11 @@ class ListViewModel(
 
     fun updateOrientation(value: Int) = orientation.update(value)
 
-    fun updateCurrentTrack(value: VideoItemUi) {
+    fun updateCurrentPlaylist(playlist: List<VideoItemUi>, selectedItem: VideoItemUi) {
         navigation.update(PlayerScreen)
-        currentVideo.update(value)
-        playerHelper.setMediaItem(value)
-        duration.update(value.map(durationMapper))
+        val index = selectedItem.map(indexMapper)
+        playerHelper.setMediaItemList(playlist, index)
+        duration.update(selectedItem.map(durationMapper))
     }
 
     fun navigation() = navigation.liveData()

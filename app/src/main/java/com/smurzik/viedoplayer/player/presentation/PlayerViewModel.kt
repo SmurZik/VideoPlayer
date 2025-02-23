@@ -26,6 +26,10 @@ class PlayerViewModel(
         orientationLiveDataWrapper.update(value)
     }
 
+    fun newDuration() = playerHelper.newDuration()
+
+    fun updateDuration(value: Int) = duration.update(value)
+
     fun changeVideoProgress(progress: Int) = playerHelper.changeVideoProgress(progress)
 
     fun duration() = duration.liveData()

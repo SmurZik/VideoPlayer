@@ -10,6 +10,7 @@ import com.smurzik.viedoplayer.list.data.VideoItemDataToDomain
 import com.smurzik.viedoplayer.list.data.VideoService
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
 import com.smurzik.viedoplayer.list.presentation.DurationMapper
+import com.smurzik.viedoplayer.list.presentation.IndexMapper
 import com.smurzik.viedoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.viedoplayer.list.presentation.ListViewModel
 import com.smurzik.viedoplayer.list.presentation.ProgressLiveDataWrapper
@@ -36,7 +37,6 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
         VideoItemDataToDomain()
     )
     private val listLiveDataWrapper = ListLiveDataWrapper.Base()
-    private val sharedCurrentVideo = CurrentVideoLiveDataWrapper.Base()
     private val interactor = VideoInteractor.Base(repository)
     private val exoPlayer = ExoPlayer.Builder(context).build()
     private val playerHelper = PlayerHelper(exoPlayer, VideoItemUiToUrl())
@@ -62,12 +62,12 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                         listLiveDataWrapper,
                         VideoItemDomainToUi()
                     ),
-                    sharedCurrentVideo,
                     playerHelper,
                     navigation,
                     orientation,
                     duration,
-                    DurationMapper()
+                    DurationMapper(),
+                    IndexMapper()
                 )
             }
 

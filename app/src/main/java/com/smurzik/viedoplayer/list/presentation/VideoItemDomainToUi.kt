@@ -10,6 +10,7 @@ class VideoItemDomainToUi : VideoItemDomain.Mapper<VideoItemUi> {
         duration: Int,
         userName: String,
         link: String,
-        title: String
-    ) = VideoItemUi(id, image, duration, userName, link, title)
+        title: String,
+        index: Int
+    ) = VideoItemUi(id, image, duration, userName, link, title, index)
 }

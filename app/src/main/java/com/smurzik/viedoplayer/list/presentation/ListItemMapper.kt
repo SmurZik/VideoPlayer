@@ -18,7 +18,8 @@ class ListItemMapper(
         duration: Int,
         userName: String,
         link: String,
-        title: String
+        title: String,
+        index: Int
     ) {
         this.title.text = title
         this.duration.text = formatDuration(duration)

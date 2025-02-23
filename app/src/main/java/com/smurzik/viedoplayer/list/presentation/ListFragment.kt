@@ -26,7 +26,7 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
 
         val adapter = VideoListAdapter(object : ClickListener {
             override fun click(item: VideoItemUi) {
-                viewModel.updateCurrentTrack(item)
+                viewModel.updateCurrentPlaylist(viewModel.liveData().value ?: listOf(), item)
             }
         })
 

@@ -10,15 +10,15 @@ import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.activity.OnBackPressedCallback
+import android.widget.SeekBar
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.viewModels
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import com.smurzik.viedoplayer.R
 import com.smurzik.viedoplayer.core.AbstractFragment
 import com.smurzik.viedoplayer.core.VideoPlayerApp
 import com.smurzik.viedoplayer.core.ViewModelFactory
-import com.smurzik.viedoplayer.databinding.CustomPlayerControlsBinding
 import com.smurzik.viedoplayer.databinding.VideoPlayerFragmentBinding
 
 class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
@@ -72,6 +72,7 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
         val btnPlayPause = view.findViewById<ImageButton>(R.id.buttonPlayPause)
         val fullscreenButton = view.findViewById<ImageButton>(R.id.fullscreenButton)
+        val seekBar = view.findViewById<SeekBar>(R.id.seekBar)
 
         btnPlayPause.setOnClickListener {
             if (playerViewModel.isPlaying()) {
@@ -82,6 +83,38 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
                 btnPlayPause.setImageResource(R.drawable.ic_pause)
             }
         }
+
+        seekBar.max = playerViewModel.duration().value ?: 0
+
+        playerViewModel.player().addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                super.onPlaybackStateChanged(playbackState)
+                if (playbackState == Player.STATE_READY) {
+                    playerViewModel.updateSeekBar()
+                }
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                if (isPlaying) playerViewModel.updateSeekBar()
+            }
+        })
+
+        playerViewModel.seekBar().observe(viewLifecycleOwner) {
+            seekBar.progress = it
+        }
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) =
+                Unit
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                playerViewModel.changeVideoProgress(seekBar?.progress ?: 0)
+            }
+
+        })
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE && playerViewModel.liveData().value != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             fullscreenButton.setImageResource(R.drawable.fullscreen_exit)
@@ -117,7 +150,7 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
     private fun exitFullscreen() {
         val window = requireActivity().window
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         controller.show(WindowInsetsCompat.Type.systemBars())
         controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE

@@ -9,6 +9,7 @@ import com.smurzik.viedoplayer.list.data.VideoCloudDataSource
 import com.smurzik.viedoplayer.list.data.VideoItemDataToDomain
 import com.smurzik.viedoplayer.list.data.VideoService
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
+import com.smurzik.viedoplayer.list.presentation.DurationMapper
 import com.smurzik.viedoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.viedoplayer.list.presentation.ListViewModel
 import com.smurzik.viedoplayer.list.presentation.ProgressLiveDataWrapper
@@ -20,6 +21,7 @@ import com.smurzik.viedoplayer.main.Navigation
 import com.smurzik.viedoplayer.player.presentation.CurrentVideoLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.OrientationLiveDataWrapper
 import com.smurzik.viedoplayer.player.presentation.PlayerViewModel
+import com.smurzik.viedoplayer.player.presentation.SeekBarLiveDataWrapper
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -40,6 +42,8 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     private val playerHelper = PlayerHelper(exoPlayer, VideoItemUiToUrl())
     private val orientation = OrientationLiveDataWrapper.Base()
     private val fullScreenManual = FullscreenManualLiveDataWrapper.Base()
+    private val seekBar = SeekBarLiveDataWrapper.Base()
+    private val duration = SharedDurationLiveDataWrapper.Base()
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
@@ -61,14 +65,17 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                     sharedCurrentVideo,
                     playerHelper,
                     navigation,
-                    orientation
+                    orientation,
+                    duration,
+                    DurationMapper()
                 )
             }
 
             PlayerViewModel::class.java -> PlayerViewModel(
                 playerHelper,
                 orientation,
-                fullScreenManual
+                seekBar,
+                duration
             )
 
             else -> throw IllegalStateException("Unknown viewModel class $modelClass")

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smurzik.viedoplayer.core.PlayerHelper
+import com.smurzik.viedoplayer.core.SharedDurationLiveDataWrapper
 import com.smurzik.viedoplayer.list.domain.VideoInteractor
 import com.smurzik.viedoplayer.main.Navigation
 import com.smurzik.viedoplayer.main.Screen
@@ -22,7 +23,9 @@ class ListViewModel(
     private val currentVideo: CurrentVideoLiveDataWrapper.Mutable,
     private val playerHelper: PlayerHelper,
     private val navigation: Navigation.Mutable,
-    private val orientation: OrientationLiveDataWrapper.Mutable
+    private val orientation: OrientationLiveDataWrapper.Mutable,
+    private val duration: SharedDurationLiveDataWrapper.Mutable,
+    private val durationMapper: DurationMapper
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
     fun init() {
@@ -42,6 +45,7 @@ class ListViewModel(
         navigation.update(PlayerScreen)
         currentVideo.update(value)
         playerHelper.setMediaItem(value)
+        duration.update(value.map(durationMapper))
     }
 
     fun navigation() = navigation.liveData()

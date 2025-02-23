@@ -3,7 +3,7 @@ package com.smurzik.viedoplayer.list.presentation
 data class VideoItemUi(
     private val id: Long,
     private val image: String,
-    private val duration: String,
+    private val duration: Int,
     private val userName: String,
     private val link: String,
     private val title: String
@@ -13,7 +13,7 @@ data class VideoItemUi(
         fun map(
             id: Long,
             image: String,
-            duration: String,
+            duration: Int,
             userName: String,
             link: String,
             title: String
@@ -24,4 +24,15 @@ data class VideoItemUi(
         mapper.map(id, image, duration, userName, link, title)
 
     fun matches(source: VideoItemUi) = source.id == id
+}
+
+class DurationMapper() : VideoItemUi.Mapper<Int> {
+    override fun map(
+        id: Long,
+        image: String,
+        duration: Int,
+        userName: String,
+        link: String,
+        title: String
+    ): Int = duration * 1000
 }

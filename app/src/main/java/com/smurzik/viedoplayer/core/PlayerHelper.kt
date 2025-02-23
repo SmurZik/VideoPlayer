@@ -18,6 +18,12 @@ class PlayerHelper(
         exoPlayer.play()
     }
 
+    fun changeVideoProgress(progress: Int) {
+        exoPlayer.seekTo(progress.toLong())
+    }
+
+    fun currentProgress() = exoPlayer.currentPosition
+
     fun player(): ExoPlayer = exoPlayer
 
     fun pause() = exoPlayer.pause()
@@ -31,7 +37,7 @@ class VideoItemUiToUrl : VideoItemUi.Mapper<String> {
     override fun map(
         id: Long,
         image: String,
-        duration: String,
+        duration: Int,
         userName: String,
         link: String,
         title: String

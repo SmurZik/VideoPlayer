@@ -29,5 +29,7 @@ data class User(
 
 data class VideoFiles(
     @SerializedName("link")
-    val link: String
+    val link: String,
+    @SerializedName("quality")
+    val quality: String
 )

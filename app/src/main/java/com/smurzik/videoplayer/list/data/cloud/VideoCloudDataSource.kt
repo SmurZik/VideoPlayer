@@ -22,7 +22,7 @@ interface VideoCloudDataSource {
                     content.image,
                     content.duration,
                     content.user.name,
-                    content.files.first().link,
+                    content.files.first { it.quality == "hd" }.link,
                     formatTitle(content.title),
                     index
                 )

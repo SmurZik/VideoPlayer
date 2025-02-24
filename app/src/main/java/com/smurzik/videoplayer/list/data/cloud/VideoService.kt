@@ -8,6 +8,6 @@ import retrofit2.http.Query
 interface VideoService {
 
     @Headers("Authorization: ${BuildConfig.apiKey}")
-    @GET("search?query=nature&")
+    @GET("search?query=nature&size=small&")
     suspend fun getVideos(@Query("page") page: Int): VideoItemCloud
 }

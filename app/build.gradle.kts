@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -13,10 +10,6 @@ android {
     namespace = "com.smurzik.videoplayer"
     compileSdk = 35
 
-    val file = rootProject.file("local.properties")
-    val properties = Properties()
-    properties.load(FileInputStream(file))
-
     defaultConfig {
         applicationId = "com.smurzik.videoplayer"
         minSdk = 26
@@ -24,7 +17,6 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "apiKey", properties.getProperty("apiKey"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -21,3 +21,8 @@
 - **Кэширование:** Room
 - **Внедрение зависимостей:** Dagger Hilt
 - **Тестирование:** Unit tests, Espresso
+
+![image](https://github.com/user-attachments/assets/3eb60774-0539-469e-8f65-3786fab96145)
+![image](https://github.com/user-attachments/assets/6fc8737c-064b-434b-ac1c-8e494cf2b02b)
+
+![image](https://github.com/user-attachments/assets/45b00346-b9cb-4df4-9fb9-c3231cea931c)

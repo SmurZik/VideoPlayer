@@ -1,6 +1,7 @@
 package com.smurzik.videoplayer.main
 
 import com.smurzik.videoplayer.core.LiveDataWrapper
+import javax.inject.Inject
 
 interface Navigation {
 
@@ -10,5 +11,5 @@ interface Navigation {
 
     interface Mutable : Read, Update
 
-    class Base : LiveDataWrapper.Abstract<Screen>(), Mutable
+    class Base @Inject constructor() : LiveDataWrapper.Abstract<Screen>(), Mutable
 }

@@ -1,6 +1,5 @@
 package com.smurzik.videoplayer.list.presentation
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +8,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import com.smurzik.videoplayer.core.AbstractFragment
-import com.smurzik.videoplayer.core.VideoPlayerApp
 import com.smurzik.videoplayer.databinding.VideoListFragmentBinding
 import com.smurzik.videoplayer.player.presentation.PlayerScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
 
     override fun bind(inflater: LayoutInflater, container: ViewGroup?): VideoListFragmentBinding {
@@ -29,9 +29,7 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
             insets
         }
 
-        val viewModelFactory = (requireActivity().application as VideoPlayerApp).viewModelFactory
-
-        val viewModel: ListViewModel by viewModels { viewModelFactory }
+        val viewModel: ListViewModel by viewModels()
 
         val adapter = VideoListAdapter(object : ClickListener {
             override fun click(item: VideoItemUi) {
@@ -45,8 +43,6 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
         binding.recyclerView.adapter = adapter
 
         viewModel.init(false)
-
-        viewModel.updateOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true

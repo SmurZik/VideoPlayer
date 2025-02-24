@@ -1,6 +1,7 @@
 package com.smurzik.videoplayer.list.data.cache
 
 import com.smurzik.videoplayer.list.data.VideoItemData
+import javax.inject.Inject
 
 interface VideoCacheDataSource {
 
@@ -8,9 +9,9 @@ interface VideoCacheDataSource {
 
     suspend fun saveVideos(videos: List<VideoItemData>)
 
-    class Base(
+    class Base @Inject constructor(
         private val dao: VideoDao,
-        private val dataToCache: VideoItemData.Mapper<VideoCache>
+        private val dataToCache: VideoDataToCache
     ) : VideoCacheDataSource {
 
         override suspend fun getVideos(): List<VideoItemData> {

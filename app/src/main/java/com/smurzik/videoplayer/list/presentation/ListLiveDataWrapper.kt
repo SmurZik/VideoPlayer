@@ -1,6 +1,7 @@
 package com.smurzik.videoplayer.list.presentation
 
 import com.smurzik.videoplayer.core.LiveDataWrapper
+import javax.inject.Inject
 
 interface ListLiveDataWrapper {
     interface Read : LiveDataWrapper.Read<List<VideoItemUi>>
@@ -9,5 +10,5 @@ interface ListLiveDataWrapper {
 
     interface Mutable : Read, Update
 
-    class Base : LiveDataWrapper.Abstract<List<VideoItemUi>>(), Mutable
+    class Base @Inject constructor() : LiveDataWrapper.Abstract<List<VideoItemUi>>(), Mutable
 }

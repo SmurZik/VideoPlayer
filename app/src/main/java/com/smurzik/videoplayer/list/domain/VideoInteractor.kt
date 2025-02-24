@@ -1,10 +1,12 @@
 package com.smurzik.videoplayer.list.domain
 
+import javax.inject.Inject
+
 interface VideoInteractor {
 
     suspend fun getVideos(needUpdate: Boolean): VideoResult
 
-    class Base(
+    class Base @Inject constructor(
         private val repository: VideoRepository
     ) : VideoInteractor {
 

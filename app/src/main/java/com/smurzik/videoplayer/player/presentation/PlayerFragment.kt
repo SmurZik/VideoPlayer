@@ -15,23 +15,23 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.smurzik.videoplayer.R
 import com.smurzik.videoplayer.core.AbstractFragment
-import com.smurzik.videoplayer.core.VideoPlayerApp
-import com.smurzik.videoplayer.core.ViewModelFactory
 import com.smurzik.videoplayer.databinding.VideoPlayerFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
+@AndroidEntryPoint
 class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
     override fun bind(inflater: LayoutInflater, container: ViewGroup?): VideoPlayerFragmentBinding {
         return VideoPlayerFragmentBinding.inflate(inflater, container, false)
     }
 
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var playerViewModel: PlayerViewModel
+    private val playerViewModel by viewModels<PlayerViewModel>()
     private lateinit var orientationEnterFullscreenEventListener: OrientationEventListener
     private lateinit var orientationExitFullscreenEventListener: OrientationEventListener
     private lateinit var controlLayout: ControlLayout
@@ -61,10 +61,6 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModelFactory = (requireActivity().application as VideoPlayerApp).viewModelFactory
-
-        playerViewModel = viewModelFactory.create(PlayerViewModel::class.java)
 
         binding.playerView.player = playerViewModel.player()
 
@@ -143,7 +139,8 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
             seekBar.max = it.duration
             durationTextView.text = playerViewModel.formatDuration(it.duration)
             titleTextView.text = it.title
-            authorTextView.text = getString(R.string.video_by_s_on_pexels).format(Locale.ROOT, it.author)
+            authorTextView.text =
+                getString(R.string.video_by_s_on_pexels).format(Locale.ROOT, it.author)
         }
 
         with(btnPlayPause) {

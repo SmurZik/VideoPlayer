@@ -1,6 +1,7 @@
 package com.smurzik.videoplayer.player.presentation
 
 import com.smurzik.videoplayer.core.MutableLiveDataWrapper
+import javax.inject.Inject
 
 interface SeekBarLiveDataWrapper {
     interface Read : MutableLiveDataWrapper.Read<Int>
@@ -9,5 +10,5 @@ interface SeekBarLiveDataWrapper {
 
     interface Mutable : Read, Update
 
-    class Base : MutableLiveDataWrapper.Abstract<Int>(), Mutable
+    class Base @Inject constructor() : MutableLiveDataWrapper.Abstract<Int>(), Mutable
 }

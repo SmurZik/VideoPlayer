@@ -3,13 +3,14 @@ package com.smurzik.videoplayer.list.data.cloud
 import androidx.core.text.isDigitsOnly
 import com.smurzik.videoplayer.list.data.VideoItemData
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.random.Random
 
 interface VideoCloudDataSource {
 
     suspend fun getVideos(): List<VideoItemData>
 
-    class Base(
+    class Base @Inject constructor(
         private val service: VideoService
     ) : VideoCloudDataSource {
 

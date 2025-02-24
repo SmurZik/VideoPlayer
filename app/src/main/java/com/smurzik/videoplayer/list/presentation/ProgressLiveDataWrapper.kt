@@ -1,6 +1,7 @@
 package com.smurzik.videoplayer.list.presentation
 
 import com.smurzik.videoplayer.core.LiveDataWrapper
+import javax.inject.Inject
 
 interface ProgressLiveDataWrapper {
     interface Read : LiveDataWrapper.Read<Int>
@@ -9,5 +10,5 @@ interface ProgressLiveDataWrapper {
 
     interface Mutable : Read, Update
 
-    class Base : LiveDataWrapper.Abstract<Int>(), Mutable
+    class Base @Inject constructor() : LiveDataWrapper.Abstract<Int>(), Mutable
 }

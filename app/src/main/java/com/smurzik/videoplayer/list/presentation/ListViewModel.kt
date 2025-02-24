@@ -5,23 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smurzik.videoplayer.core.PlayerHelper
-import com.smurzik.videoplayer.core.SharedVideoLiveDataWrapper
 import com.smurzik.videoplayer.list.domain.VideoInteractor
 import com.smurzik.videoplayer.main.Navigation
 import com.smurzik.videoplayer.main.Screen
-import com.smurzik.videoplayer.player.presentation.OrientationLiveDataWrapper
 import com.smurzik.videoplayer.player.presentation.PlayerScreen
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ListViewModel(
+@HiltViewModel
+class ListViewModel @Inject constructor(
     private val videoInteractor: VideoInteractor,
     private val progressLiveDataWrapper: ProgressLiveDataWrapper.Mutable,
     private val listLiveDataWrapper: ListLiveDataWrapper.Mutable,
     private val resultMapper: VideoResultMapper,
     private val playerHelper: PlayerHelper,
     private val navigation: Navigation.Mutable,
-    private val orientation: OrientationLiveDataWrapper.Mutable,
     private val indexMapper: IndexMapper
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
@@ -35,8 +35,6 @@ class ListViewModel(
             result.map(resultMapper)
         }
     }
-
-    fun updateOrientation(value: Int) = orientation.update(value)
 
     fun updateCurrentPlaylist(playlist: List<VideoItemUi>, selectedItem: VideoItemUi) {
         navigation.update(PlayerScreen)

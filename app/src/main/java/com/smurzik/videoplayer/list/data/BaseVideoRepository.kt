@@ -4,10 +4,11 @@ import com.smurzik.videoplayer.list.data.cache.VideoCacheDataSource
 import com.smurzik.videoplayer.list.data.cloud.VideoCloudDataSource
 import com.smurzik.videoplayer.list.domain.VideoItemDomain
 import com.smurzik.videoplayer.list.domain.VideoRepository
+import javax.inject.Inject
 
-class BaseVideoRepository(
+class BaseVideoRepository @Inject constructor(
     private val cloudDataSource: VideoCloudDataSource,
-    private val mapperToDomain: VideoItemData.Mapper<VideoItemDomain>,
+    private val mapperToDomain: VideoItemDataToDomain,
     private val cacheDataSource: VideoCacheDataSource
 ) : VideoRepository {
 

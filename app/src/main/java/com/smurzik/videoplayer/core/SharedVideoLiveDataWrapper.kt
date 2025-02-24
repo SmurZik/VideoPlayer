@@ -1,6 +1,7 @@
 package com.smurzik.videoplayer.core
 
 import com.smurzik.videoplayer.player.presentation.PlayerInfoUi
+import javax.inject.Inject
 
 interface SharedVideoLiveDataWrapper {
 
@@ -10,5 +11,5 @@ interface SharedVideoLiveDataWrapper {
 
     interface Mutable : Read, Update
 
-    class Base : MutableLiveDataWrapper.Abstract<PlayerInfoUi>(), Mutable
+    class Base @Inject constructor() : MutableLiveDataWrapper.Abstract<PlayerInfoUi>(), Mutable
 }

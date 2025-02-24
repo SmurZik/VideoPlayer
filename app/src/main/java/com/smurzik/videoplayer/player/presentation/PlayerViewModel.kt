@@ -9,12 +9,15 @@ import com.smurzik.videoplayer.list.presentation.DurationMapper
 import com.smurzik.videoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.PlayerInfoMapper
 import com.smurzik.videoplayer.list.presentation.VideoItemUi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
+import javax.inject.Inject
 
-class PlayerViewModel(
+@HiltViewModel
+class PlayerViewModel @Inject constructor(
     private val playerHelper: PlayerHelper,
     private val orientationLiveDataWrapper: OrientationLiveDataWrapper.Mutable,
     private val seekBar: SeekBarLiveDataWrapper.Mutable,
@@ -33,8 +36,6 @@ class PlayerViewModel(
     fun updateOrientation(value: Int) {
         orientationLiveDataWrapper.update(value)
     }
-
-    fun newDuration() = playerHelper.newDuration()
 
     fun formatDuration(millis: Int): String {
         val seconds = millis / 1000

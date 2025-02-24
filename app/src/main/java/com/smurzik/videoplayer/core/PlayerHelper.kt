@@ -6,7 +6,7 @@ import com.smurzik.videoplayer.list.presentation.VideoItemUi
 
 class PlayerHelper(
     private val exoPlayer: ExoPlayer,
-    private val urlMapper: VideoItemUi.Mapper<String>
+    private val urlMapper: VideoItemUiToUrl
 ) {
 
     fun isPlaying() = exoPlayer.isPlaying

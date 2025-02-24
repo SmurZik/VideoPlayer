@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VideoPlayer</string>
+    <string name="video_by_s_on_pexels">Video by %s on Pexels</string>
 </resources>

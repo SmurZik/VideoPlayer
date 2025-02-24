@@ -17,6 +17,7 @@ import com.smurzik.videoplayer.list.presentation.DurationMapper
 import com.smurzik.videoplayer.list.presentation.IndexMapper
 import com.smurzik.videoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.ListViewModel
+import com.smurzik.videoplayer.list.presentation.PlayerInfoMapper
 import com.smurzik.videoplayer.list.presentation.ProgressLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.VideoItemDomainToUi
 import com.smurzik.videoplayer.list.presentation.VideoResultMapper
@@ -59,7 +60,8 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     private val playerHelper = PlayerHelper(exoPlayer, VideoItemUiToUrl())
     private val orientation = OrientationLiveDataWrapper.Base()
     private val seekBar = SeekBarLiveDataWrapper.Base()
-    private val duration = SharedDurationLiveDataWrapper.Base()
+    private val currentVideo = SharedVideoLiveDataWrapper.Base()
+    private val playerInfoMapper = PlayerInfoMapper()
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
@@ -79,18 +81,21 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                     playerHelper,
                     navigation,
                     orientation,
-                    duration,
-                    DurationMapper(),
                     IndexMapper()
                 )
             }
 
-            PlayerViewModel::class.java -> PlayerViewModel(
-                playerHelper,
-                orientation,
-                seekBar,
-                duration
-            )
+            PlayerViewModel::class.java -> {
+                PlayerViewModel(
+                    playerHelper,
+                    orientation,
+                    seekBar,
+                    listLiveDataWrapper,
+                    DurationMapper(),
+                    currentVideo,
+                    playerInfoMapper
+                )
+            }
 
             else -> throw IllegalStateException("Unknown viewModel class $modelClass")
         } as T

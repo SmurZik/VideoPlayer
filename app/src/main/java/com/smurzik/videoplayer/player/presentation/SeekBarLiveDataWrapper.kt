@@ -1,13 +1,13 @@
 package com.smurzik.videoplayer.player.presentation
 
-import com.smurzik.videoplayer.core.LiveDataWrapper
+import com.smurzik.videoplayer.core.MutableLiveDataWrapper
 
 interface SeekBarLiveDataWrapper {
-    interface Read : LiveDataWrapper.Read<Int>
+    interface Read : MutableLiveDataWrapper.Read<Int>
 
-    interface Update : LiveDataWrapper.Update<Int>
+    interface Update : MutableLiveDataWrapper.Update<Int>
 
     interface Mutable : Read, Update
 
-    class Base : LiveDataWrapper.Abstract<Int>(), Mutable
+    class Base : MutableLiveDataWrapper.Abstract<Int>(), Mutable
 }

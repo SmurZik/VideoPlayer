@@ -14,11 +14,15 @@
         app:controller_layout_id="@layout/custom_player_controls" />
 
     <TextView
+        android:id="@+id/videoTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/authorTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center" />

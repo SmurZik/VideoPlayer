@@ -1,0 +1,27 @@
+package com.smurzik.videoplayer.core
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+
+interface MutableLiveDataWrapper {
+    interface Read<T : Any> {
+        fun liveData(): LiveData<T>
+    }
+
+    interface Update<T : Any> {
+        fun update(value: T)
+    }
+
+    interface Mutable<T : Any> : Read<T>, Update<T>
+
+    abstract class Abstract<T : Any>(
+        protected val liveData: MutableLiveData<T> = MutableLiveData()
+    ) : Mutable<T> {
+
+        override fun liveData(): LiveData<T> = liveData
+
+        override fun update(value: T) {
+            liveData.postValue(value)
+        }
+    }
+}

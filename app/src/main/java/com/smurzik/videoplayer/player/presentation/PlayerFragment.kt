@@ -22,6 +22,7 @@ import com.smurzik.videoplayer.core.AbstractFragment
 import com.smurzik.videoplayer.core.VideoPlayerApp
 import com.smurzik.videoplayer.core.ViewModelFactory
 import com.smurzik.videoplayer.databinding.VideoPlayerFragmentBinding
+import java.util.Locale
 
 class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
 
@@ -103,6 +104,8 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
         val durationTextView = view.findViewById<TextView>(R.id.duration)
         val skipNextButton = view.findViewById<ImageButton>(R.id.buttonNext)
         val skipPreviousButton = view.findViewById<ImageButton>(R.id.buttonPrevious)
+        val titleTextView = view.findViewById<TextView>(R.id.videoTitleTextView)
+        val authorTextView = view.findViewById<TextView>(R.id.authorTextView)
         controlLayout = view.findViewById(R.id.controlLayout)
 
         btnPlayPause.setOnClickListener {
@@ -136,9 +139,18 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
             playerViewModel.player().seekToNext()
         }
 
-        playerViewModel.duration().observe(viewLifecycleOwner) {
-            seekBar.max = it
-            durationTextView.text = playerViewModel.formatDuration(it)
+        playerViewModel.currentVideo().observe(viewLifecycleOwner) {
+            seekBar.max = it.duration
+            durationTextView.text = playerViewModel.formatDuration(it.duration)
+            titleTextView.text = it.title
+            authorTextView.text = getString(R.string.video_by_s_on_pexels).format(Locale.ROOT, it.author)
+        }
+
+        with(btnPlayPause) {
+            if (playerViewModel.isPlaying())
+                setImageResource(R.drawable.ic_pause)
+            else
+                setImageResource(R.drawable.ic_play)
         }
 
         playerViewModel.player().addListener(object : Player.Listener {
@@ -146,18 +158,24 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == Player.STATE_READY) {
                     playerViewModel.updateSeekBar()
-                    playerViewModel.updateDuration(playerViewModel.newDuration())
+                    playerViewModel.updateCurrentVideo(playerViewModel.player().currentMediaItemIndex)
                 }
             }
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
-                playerViewModel.updateDuration(playerViewModel.newDuration())
+                playerViewModel.updateCurrentVideo(playerViewModel.player().currentMediaItemIndex)
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 if (isPlaying) playerViewModel.updateSeekBar()
+                with(btnPlayPause) {
+                    if (isPlaying)
+                        setImageResource(R.drawable.ic_pause)
+                    else
+                        setImageResource(R.drawable.ic_play)
+                }
             }
         })
 
@@ -165,9 +183,6 @@ class PlayerFragment : AbstractFragment<VideoPlayerFragmentBinding>() {
             seekBar.progress = it
             progressTextView.text = playerViewModel.formatDuration(it)
         }
-
-        seekBar.max = playerViewModel.duration().value ?: 0
-        durationTextView.text = playerViewModel.formatDuration(seekBar.max)
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) =

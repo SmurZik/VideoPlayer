@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smurzik.videoplayer.core.PlayerHelper
-import com.smurzik.videoplayer.core.SharedDurationLiveDataWrapper
+import com.smurzik.videoplayer.core.SharedVideoLiveDataWrapper
 import com.smurzik.videoplayer.list.domain.VideoInteractor
 import com.smurzik.videoplayer.main.Navigation
 import com.smurzik.videoplayer.main.Screen
@@ -22,8 +22,6 @@ class ListViewModel(
     private val playerHelper: PlayerHelper,
     private val navigation: Navigation.Mutable,
     private val orientation: OrientationLiveDataWrapper.Mutable,
-    private val duration: SharedDurationLiveDataWrapper.Mutable,
-    private val durationMapper: DurationMapper,
     private val indexMapper: IndexMapper
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
@@ -44,7 +42,6 @@ class ListViewModel(
         navigation.update(PlayerScreen)
         val index = selectedItem.map(indexMapper)
         playerHelper.setMediaItemList(playlist, index)
-        duration.update(selectedItem.map(durationMapper))
     }
 
     fun navigation() = navigation.liveData()

@@ -22,7 +22,8 @@ class ListViewModel @Inject constructor(
     private val resultMapper: VideoResultMapper,
     private val playerHelper: PlayerHelper,
     private val navigation: Navigation.Mutable,
-    private val indexMapper: IndexMapper
+    private val indexMapper: IndexMapper,
+    private val errorLiveDataWrapper: ErrorLiveDataWrapper.Mutable
 ) : ViewModel(), ListLiveDataWrapper.Mutable {
 
     fun init(needUpdate: Boolean) {
@@ -35,6 +36,8 @@ class ListViewModel @Inject constructor(
             result.map(resultMapper)
         }
     }
+
+    fun errorLiveDataWrapper() = errorLiveDataWrapper.liveData()
 
     fun updateCurrentPlaylist(playlist: List<VideoItemUi>, selectedItem: VideoItemUi) {
         navigation.update(PlayerScreen)

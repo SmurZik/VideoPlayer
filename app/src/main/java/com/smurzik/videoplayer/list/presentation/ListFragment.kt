@@ -54,6 +54,15 @@ class ListFragment : AbstractFragment<VideoListFragmentBinding>() {
             binding.progressBar.visibility = it
         }
 
+        viewModel.errorLiveDataWrapper().observe(viewLifecycleOwner) {
+            if (it.isEmpty())
+                binding.errorMessage.visibility = View.GONE
+            else {
+                binding.errorMessage.text = it
+                binding.errorMessage.visibility = View.VISIBLE
+            }
+        }
+
         viewModel.liveData().observe(viewLifecycleOwner) {
             adapter.update(it)
         }

@@ -4,6 +4,7 @@ import com.smurzik.videoplayer.core.VideoItemUiToUrl
 import com.smurzik.videoplayer.list.data.VideoItemDataToDomain
 import com.smurzik.videoplayer.list.data.cache.VideoDataToCache
 import com.smurzik.videoplayer.list.presentation.DurationMapper
+import com.smurzik.videoplayer.list.presentation.ErrorLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.IndexMapper
 import com.smurzik.videoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.PlayerInfoMapper
@@ -52,10 +53,11 @@ object MapperModule {
     @Provides
     @Singleton
     fun provideVideoResultMapper(
+        errorLiveDataWrapper: ErrorLiveDataWrapper.Mutable,
         domainToUi: VideoItemDomainToUi,
         list: ListLiveDataWrapper.Mutable
     ): VideoResultMapper {
-        return VideoResultMapper(list, domainToUi)
+        return VideoResultMapper(errorLiveDataWrapper, list, domainToUi)
     }
 
     @Provides

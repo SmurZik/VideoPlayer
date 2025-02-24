@@ -4,8 +4,10 @@ import com.smurzik.videoplayer.core.SharedVideoLiveDataWrapper
 import com.smurzik.videoplayer.list.data.BaseVideoRepository
 import com.smurzik.videoplayer.list.data.cache.VideoCacheDataSource
 import com.smurzik.videoplayer.list.data.cloud.VideoCloudDataSource
+import com.smurzik.videoplayer.list.domain.HandleError
 import com.smurzik.videoplayer.list.domain.VideoInteractor
 import com.smurzik.videoplayer.list.domain.VideoRepository
+import com.smurzik.videoplayer.list.presentation.ErrorLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.ListLiveDataWrapper
 import com.smurzik.videoplayer.list.presentation.ProgressLiveDataWrapper
 import com.smurzik.videoplayer.main.Navigation
@@ -60,4 +62,13 @@ abstract class MainModule {
     @Binds
     @Singleton
     abstract fun bindProgressLiveDataWrapper(progress: ProgressLiveDataWrapper.Base): ProgressLiveDataWrapper.Mutable
+
+    @Binds
+    @Singleton
+    abstract fun bindHandleError(handleError: HandleError.Base): HandleError
+
+    @Binds
+    @Singleton
+    abstract fun bindErrorMessage(errorMessage: ErrorLiveDataWrapper.Base): ErrorLiveDataWrapper.Mutable
+
 }
